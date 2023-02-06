@@ -1,25 +1,5 @@
-interface LoanApplicationRequestDTO {
-  "amount": "BigDecimal",
-  "term": "Integer",
-  "firstName": "String",
-  "lastName": "String",
-  "middleName": "String",
-  "email": "String",
-  "birthdate": "LocalDate",
-  "passportSeries": "String",
-  "passportNumber": "String"
-}
-
-interface LoanOfferDTO {
-  "applicationId": "Long",
-  "requestedAmount": "BigDecimal",
-  "totalAmount": "BigDecimal",
-  "term": "Integer",
-  "monthlyPayment": "BigDecimal",
-  "rate": "BigDecimal",
-  "isInsuranceEnabled": "Boolean",
-  "isSalaryClient": "Boolean"
-}
+import { LoanApplicationRequestDTO } from "./LoanApplicationRequestDTO.js"
+import { LoanOfferDTO } from "./LoanOfferDTO.js"
 
 interface ScoringDataDTO {
   "amount": "BigDecimal",
@@ -69,6 +49,15 @@ interface PaymentScheduleElement {
   "interestPayment": "BigDecimal",
   "debtPayment": "BigDecimal",
   "remainingDebt": "BigDecimal"
+}
+
+export {
+  LoanApplicationRequestDTO, 
+  LoanOfferDTO,
+  ScoringDataDTO,
+  CreditDTO,
+  EmploymentDTO,
+  PaymentScheduleElement
 }
 
 // interface FinishRegistrationRequestDTO {

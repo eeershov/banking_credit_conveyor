@@ -1,6 +1,6 @@
 import express from 'express';
 
-import {calculationController} from '../controlles/calculationController.js';
+import {calculationController} from '../controlles/calculation.controller.js';
 
 const router = express.Router();
 
