@@ -7,7 +7,7 @@ const app = express();
 app.use(express.json());
 
 app.get('/', (req, res) => {
-  res.send('Hello World!')
+  res.send('Banking credit conveyor MVP1')
 })
 
 import conveyorRoutes from './routes/conveyorRoutes.js';
