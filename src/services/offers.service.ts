@@ -29,20 +29,32 @@ import RATE from "./property.js";
 type LoanApplicationRequestDTO = z.infer<typeof LoanApplicationRequestDTO>;
 type LoanOfferDTO = z.infer<typeof LoanOfferDTO>;
 
-function prescoring(obj: LoanApplicationRequestDTO): LoanOfferDTO[] {
-  const result = {
-    valid: true,
-    errors: []
-  };
+function prescoring(obj: LoanApplicationRequestDTO): LoanOfferDTO[] | false {
   
-  const data = LoanApplicationRequestDTO.safeParse(obj)
+  const data = LoanApplicationRequestDTO.safeParse(obj);
   if (!data.success) {
     const formatted = data.error.format();
-    console.error(formatted)
+    console.error(formatted);
+    return false;
   } else {
-    console.log(`prescoring: ${JSON.stringify(data)}`)
+    console.log(`prescoring: ${JSON.stringify(data)}`);
+    return [generateLoanOffer(obj)];
   }
-  
+
+}
+
+function generateLoanOffer(obj: LoanApplicationRequestDTO): LoanOfferDTO {
+  const result = {
+    "applicationId": 123123,            // "Long"
+    "requestedAmount": 123123,          // "BigDecimal"
+    "totalAmount": 123123,              // "BigDecimal"
+    "term": 123123123,                     // "Integer"
+    "monthlyPayment": 123123123,           // "BigDecimal"
+    "rate": 123123123,                     // "BigDecimal"
+    "isInsuranceEnabled": true,      // "Boolean"
+    "isSalaryClient": true           // "Boolean"
+  };
+
   // obj.amount                //: number,               // "BigDecimal"
   // obj.term                  //: number,                 // "Integer"
   // obj.firstName             //: string,            // "String"
@@ -53,22 +65,7 @@ function prescoring(obj: LoanApplicationRequestDTO): LoanOfferDTO[] {
   // obj.passportSeries        //: string,       // "String"
   // obj.passportNumber        //: string        // "String"
   
-  
-  return []
+  return result;
 }
 
-function generateLoanOffer(obj: LoanApplicationRequestDTO): LoanOfferDTO {
-  let result = {
-    "applicationId": 123123,            // "Long"
-    "requestedAmount": 123123,          // "BigDecimal"
-    "totalAmount": 123123,              // "BigDecimal"
-    "term": 123123123,                     // "Integer"
-    "monthlyPayment": 123123123,           // "BigDecimal"
-    "rate": 123123123,                     // "BigDecimal"
-    "isInsuranceEnabled": true,      // "Boolean"
-    "isSalaryClient": true           // "Boolean"
-  };
-  return result
-}
-
-export { prescoring }
+export { prescoring };
