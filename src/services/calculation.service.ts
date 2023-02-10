@@ -90,6 +90,8 @@ function generateCreditData(ScoringData: ScoringDataDTO): CreditDTO {
       monthlyPayment: number;
     }): PaymentScheduleElement[] => {
 
+    // todo: fix math error with psk vs amount
+    
     const currentDate = new Date();
     const currentYear = currentDate.getFullYear();
     const currentMonth = currentDate.getMonth() + 1; // 0 index based
