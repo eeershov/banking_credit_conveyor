@@ -1,6 +1,6 @@
 import z from "zod";
 
-const PaymentScheduleElement = z.object({
+export const PaymentScheduleElement = z.object({
   "number": z.number(),               // "Integer",
   "date": z.coerce.date(),            // "LocalDate",
   "totalPayment": z.number(),         // "BigDecimal",
@@ -8,5 +8,3 @@ const PaymentScheduleElement = z.object({
   "debtPayment": z.number(),          // "BigDecimal",
   "remainingDebt": z.number()         // "BigDecimal"
 });
-
-export { PaymentScheduleElement };

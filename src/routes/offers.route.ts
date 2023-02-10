@@ -4,6 +4,6 @@ import { offersController } from '../controlles/offers.controller.js';
 
 const router = express.Router();
 
-router.post('/', offersController)
+router.post('/', offersController);
 
 export default router;
