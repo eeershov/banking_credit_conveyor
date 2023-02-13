@@ -65,12 +65,13 @@ function validateScoringData(ScoringData: ScoringDataDTO): boolean {
 // Gets CreditDto from validated data.
 function generateCreditData(ScoringData: ScoringDataDTO): CreditDTO {
   const term = ScoringData.term;
-  const amount = ScoringData.amount;
+  const amount = ScoringData.amount; // loan principal
   
   // высчитывание ставки(rate), 
   const rate = getRate(ScoringData);
   
   // полной стоимости кредита(psk), 
+  // total loan includes loan principal and any other bank payment
   const psk = getTotalLoan(amount, term, ScoringData.isInsuranceEnabled);
   
   // размер ежемесячного платежа(monthlyPayment), 
@@ -82,32 +83,34 @@ function generateCreditData(ScoringData: ScoringDataDTO): CreditDTO {
   
   // график ежемесячных платежей (List<PaymentScheduleElement>).
   type PaymentScheduleElement = z.infer<typeof PaymentScheduleElement>;
-  const getMonthlyPaymentCalendar = ({amount, psk, term, rate, monthlyPayment }: {
-      amount: number;
+  const getMonthlyPaymentCalendar = ({psk, term, rate, monthlyPayment }: {
       psk: number;
       term: number;
       rate: number;
       monthlyPayment: number;
     }): PaymentScheduleElement[] => {
 
-    // todo: fix math error with psk vs amount
     
     const currentDate = new Date();
     const currentYear = currentDate.getFullYear();
     const currentMonth = currentDate.getMonth() + 1; // 0 index based
     
     const listOfMonths = [];
-    let remainingDebt = amount;
+    let remainingDebt = psk;
     for (let i = 0; i < term; i++) {
+      let monthlyPaymentVar = monthlyPayment;
       // Остаток долга × Процентная ставка × Количество дней в месяце / Количество дней в году
       const interestPayment = remainingDebt * rate/100 * getDaysInMonth(currentYear,currentMonth) / 365;
-      const debtPayment = monthlyPayment - interestPayment;
-      remainingDebt -= debtPayment;
+      if (remainingDebt < monthlyPayment) {
+        monthlyPaymentVar = remainingDebt;
+      }
+      const debtPayment = monthlyPaymentVar - interestPayment;
+      remainingDebt -= monthlyPaymentVar;
       
       const monthElement = {
         "number": i+1,
         "date": new Date(currentYear, currentMonth + i, 2),
-        "totalPayment": monthlyPayment,
+        "totalPayment": monthlyPaymentVar,
         "interestPayment": interestPayment,
         "debtPayment": debtPayment,
         "remainingDebt": remainingDebt
@@ -127,7 +130,7 @@ function generateCreditData(ScoringData: ScoringDataDTO): CreditDTO {
     "psk": psk,
     "isInsuranceEnabled": ScoringData.isInsuranceEnabled,
     "isSalaryClient": ScoringData.isSalaryClient,
-    "paymentSchedule": getMonthlyPaymentCalendar({amount: amount, psk: psk, term: term, rate: rate, monthlyPayment: monthlyPayment})
+    "paymentSchedule": getMonthlyPaymentCalendar({psk: psk, term: term, rate: rate, monthlyPayment: monthlyPayment})
   };
 
   return CreditData;
